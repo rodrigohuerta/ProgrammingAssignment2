@@ -25,11 +25,14 @@ cacheSolve <- function(x, ...) {
     message("getting cached data")
     return(inversa)
   }
-  data <- inversa$get()
+  data <- x$get()
   inversa <- solve(data, ...)
   x$setinversa(inversa)
   inversa
 }
+
+
+
 
 
 # Testing makeCachematrix function
