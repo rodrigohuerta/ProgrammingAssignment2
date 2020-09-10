@@ -1,6 +1,9 @@
 ## Put comments here that give an overall description of what your
 ## functions do
 
+## makeCacheMatrix and cacheSolve matrix are two functions to get the inverse of a matrix and store the result 
+## so that we can retrieve it and save computation time
+
 ## Write a short comment describing this function
 
 makeCacheMatrix <- function(x = matrix()) {
@@ -11,9 +14,7 @@ makeCacheMatrix <- function(x = matrix()) {
   }
   get<-function() x
   setinversa<-function(inv) inversa<<-inv
-  getinversa<-function(){
-    solve(x)
-  }
+  getinversa<-function() inversa 
   list(set=set, get=get,
        setinversa=setinversa,
        getinversa=getinversa)
@@ -31,21 +32,56 @@ cacheSolve <- function(x, ...) {
   inversa
 }
 
+test4<-makeCacheMatrix(mimatriz)
 
+test4$get()
+test4$getinversa()
 
+test5<- cacheSolve(test4)
 
+test5
 
 # Testing makeCachematrix function
 
+## Creating and solving example matrix
+
 mimatriz<-matrix(c(4,2,7,6),2,2)
 
-print(mimatriz)
+is.matrix(mimatriz)
 
 solve(mimatriz)
 
-makeCacheMatrix(mimatriz)
+## Using function to get matrix and its inverse
 
-solve(mimatriz)
+test<-cacheSolve(mimatriz)
+
+test$get()
+  
+test$getinversa()
+
+## The function is able to retrieve the inverse 
+
+# Testing cacheSolve function
+
+## We use the same example
+
+test2<-cacheSolve(matrix(c(4,2,7,6),2,2))
+
+
+cacheSolve1 <- function(x, ...) {
+  inversa <- x[[getinversa()]]
+  if(!is.null(inversa)) {
+    message("getting cached data")
+    return(inversa)
+  }
+  data <- x$get()
+  inversa <- solve(data, ...)
+  x$setinversa(inversa)
+  inversa
+}
+
+test3<-cacheSolve1(matrix(c(4,2,7,6),2,2))
+
 
 # Using Makevector
 
@@ -102,3 +138,18 @@ cachemean1(mivector)
 ## Write a short comment describing this function
 
 
+makeCacheMatrix <- function(x = matrix()) {
+  inversa<-NULL
+  set<-function(y){
+    x<<-y
+    inversa<<-NULL
+  }
+  get<-function() x
+  setinversa<-function(inv) inversa<<-inv
+  getinversa<-function(){
+    solve(x)
+  }
+  list(set=set, get=get,
+       setinversa=setinversa,
+       getinversa=getinversa)
+}
